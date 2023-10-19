@@ -25,7 +25,7 @@ type IDataspikeClient interface {
 	CreateApplicant(*ApplicantCreate) (string, error)
 	CreateVerification(*VerificationCreate) (*Verification, error)
 	CreateWebhook(*WebhookCreate) error
-	ListWebhooks() ([]Webhook, error)
+	ListWebhooks() (*WebhookResponse, error)
 	DeleteWebhook(uuid.UUID) error
 }
 
@@ -194,19 +194,19 @@ func (dc *dataspikeClient) CreateWebhook(webhook *WebhookCreate) error {
 
 // ListWebhooks returns data of all webhooks
 // Documentation: https://docs.dataspike.io/api/#tag/Webhooks/operation/list-webhooks
-func (dc *dataspikeClient) ListWebhooks() ([]Webhook, error) {
+func (dc *dataspikeClient) ListWebhooks() (*WebhookResponse, error) {
 	body, err := dc.doRequest(http.MethodGet, fmt.Sprintf("%s/api/v3/organization/webhooks", dc.endpoint), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var webhooks []Webhook
-	err = json.Unmarshal(body, &webhooks)
+	var webhook WebhookResponse
+	err = json.Unmarshal(body, &webhook)
 	if err != nil {
 		return nil, err
 	}
 
-	return webhooks, nil
+	return &webhook, nil
 }
 
 // DeleteWebhook removes webhook by ID
