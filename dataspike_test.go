@@ -594,13 +594,13 @@ func Test_dataspikeClient_ListWebhooks(t *testing.T) {
 	tests := []struct {
 		name    string
 		handler http.HandlerFunc
-		want    []dataspike.Webhook
+		want    *dataspike.WebhookResponse
 		err     string
 	}{
 		{
 			name: "success",
 			handler: http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-				v, err := json.Marshal([]dataspike.Webhook{})
+				v, err := json.Marshal(&dataspike.WebhookResponse{})
 				if err != nil {
 					t.Error(err)
 				}
@@ -610,7 +610,7 @@ func Test_dataspikeClient_ListWebhooks(t *testing.T) {
 				}
 				res.WriteHeader(http.StatusOK)
 			}),
-			want: []dataspike.Webhook{},
+			want: &dataspike.WebhookResponse{},
 			err:  "",
 		},
 		{
@@ -626,7 +626,7 @@ func Test_dataspikeClient_ListWebhooks(t *testing.T) {
 				}
 				res.WriteHeader(http.StatusOK)
 			}),
-			err: "json: cannot unmarshal string into Go value of type []dataspike.Webhook",
+			err: "json: cannot unmarshal string into Go value of type dataspike.WebhookResponse",
 		},
 		{
 			name: "status error",
