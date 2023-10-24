@@ -183,8 +183,5 @@ type Webhook struct {
 }
 
 type WebhookResponse struct {
-	OrganizationId string    `json:"organization_id"`
-	ApiKey         string    `json:"api_key"`
-	SandboxApiKey  string    `json:"sandbox_api_key"`
-	Webhooks       []Webhook `json:"webhooks"`
+	Webhooks []Webhook `json:"webhooks"`
 }
