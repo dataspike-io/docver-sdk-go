@@ -3,6 +3,7 @@ package dataspike
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -36,6 +37,8 @@ type dataspikeClient struct {
 	endpoint string
 	token    string
 }
+
+var ErrNotFound = errors.New("not found")
 
 // GetVerificationByID returns a data of verification by received ID
 // Documentation: https://docs.dataspike.io/api/#tag/Verifications/operation/get-verification
@@ -305,6 +308,9 @@ func (dc *dataspikeClient) doRequest(method, url string, body io.Reader) ([]byte
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, ErrNotFound
+	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusNoContent {
 		return nil, fmt.Errorf("dataspike error: %s; body: %s", resp.Status, string(bodyBytes))
 	}
